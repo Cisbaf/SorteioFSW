@@ -5,7 +5,6 @@ import com.sorteiofsw.domain.ParticipanteResponse;
 import com.sorteiofsw.service.ParticipanteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +27,8 @@ public class ParticipanteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteParticipante(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteParticipante(@PathVariable Long id) {
         service.deleteParticipante(id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.noContent().build();
     }
 }
