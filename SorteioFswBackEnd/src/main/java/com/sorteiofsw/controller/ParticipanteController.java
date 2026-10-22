@@ -2,12 +2,17 @@ package com.sorteiofsw.controller;
 
 import com.sorteiofsw.domain.ParticipanteRequest;
 import com.sorteiofsw.domain.ParticipanteResponse;
+import com.sorteiofsw.service.ExcelService;
 import com.sorteiofsw.service.ParticipanteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -15,10 +20,21 @@ import java.util.List;
 @RequestMapping("/participante")
 public class ParticipanteController {
     private final ParticipanteService service;
+    private final ExcelService excelService;
 
     @GetMapping
     public ResponseEntity<List<ParticipanteResponse>> getParticipante() {
         return ResponseEntity.ok(service.getParticipante());
+    }
+
+    @GetMapping("/excel")
+    public ResponseEntity<byte[]> exportExcel() {
+        var arquivo = excelService.gerar(service.getParticipante());
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(ExcelService.TIPO))
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename(arquivo.nome(), StandardCharsets.UTF_8).build().toString())
+                .body(arquivo.bytes());
     }
 
     @PostMapping

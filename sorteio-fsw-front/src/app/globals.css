@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  /* fswk26: noite índigo, magenta do botão "Comprar" e as cores da marca */
+  --color-noite-950: #0b0b26;
+  --color-noite-900: #0f0f33;
+  --color-noite-700: #19196d;
+  --color-magenta: #dc188b;
+  --color-magenta-escuro: #b50f70;
+  --color-rosa: #ff4fae;
+  --color-laranja: #ff8a1f;
+  --color-lima: #c6f432;
+  --color-amarelo: #ffd60a;
+  --color-lilas: #b18cff;
+
+  /* CISBAF: anéis vermelho e amarelo do logo, azul institucional do site */
+  --color-cisbaf-vermelho: #a1352f;
+  --color-cisbaf-amarelo: #e6dc00;
+  --color-cisbaf-azul: #1a4a8e;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-noite-900);
+}
+
+/* Fundo da página no clima do fswk26: índigo com halos coloridos. */
+.fundo-evento {
+  background:
+    radial-gradient(55% 35% at 100% 0%, rgb(220 24 139 / 0.38), transparent 70%),
+    radial-gradient(45% 30% at 0% 22%, rgb(139 61 255 / 0.35), transparent 70%),
+    radial-gradient(60% 30% at 50% 100%, rgb(198 244 50 / 0.12), transparent 70%),
+    radial-gradient(105% 330% at -2% 0%, var(--color-noite-900) 0%, var(--color-noite-700) 100%);
+}
+
+/* Faixa com as cores da marca fswk (topo do cartão e do painel). */
+.faixa-evento {
+  background: linear-gradient(
+    90deg,
+    var(--color-rosa),
+    var(--color-laranja) 25%,
+    var(--color-amarelo) 50%,
+    var(--color-lima) 75%,
+    var(--color-lilas)
+  );
+}
+
+.texto-gradiente {
+  background: linear-gradient(90deg, var(--color-rosa), var(--color-laranja), var(--color-amarelo));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animar-entrada {
+  animation: entrar 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animar-entrada {
+    animation: none;
+  }
+}

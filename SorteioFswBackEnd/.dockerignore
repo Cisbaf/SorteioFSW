@@ -1,0 +1,13 @@
+target
+.idea
+*.iml
+.git
+.vscode
+.mvn
+mvnw
+mvnw.cmd
+# Segredos nunca entram na imagem: tudo vem de variáveis de ambiente na hora de subir.
+.env
+.env.*
+Dockerfile
+.dockerignore
