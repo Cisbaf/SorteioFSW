@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   // e o shell pré-renderizado do Cache Components não recebe o nonce.
   reactCompiler: true,
   poweredByHeader: false,
+  // Gera .next/standalone (servidor mínimo para a imagem Docker). Em produção rode `node .next/standalone/server.js`.
+  output: "standalone",
   // Permite abrir o servidor de desenvolvimento pelo celular na mesma rede (ex.: http://192.168.0.10:3000).
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.16.*.*"],
   turbopack: {

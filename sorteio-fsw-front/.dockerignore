@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.idea
+.vscode
+npm-debug.log
+*.tsbuildinfo
+# Segredos nunca entram na imagem: tudo vem de variáveis de ambiente na hora de subir.
+.env
+.env.*
+!.env.example
+Dockerfile
+.dockerignore
