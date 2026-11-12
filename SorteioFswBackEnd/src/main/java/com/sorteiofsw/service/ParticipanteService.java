@@ -5,8 +5,10 @@ import com.sorteiofsw.domain.ParticipanteRequest;
 import com.sorteiofsw.domain.ParticipanteResponse;
 import com.sorteiofsw.repository.ParticipanteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,6 +27,12 @@ public class ParticipanteService {
         return mapResponse(participante);
     }
 
+    public ParticipanteResponse getParticipante(Long id) {
+        return participanteRepository.findById(id)
+                .map(this::mapResponse)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participante não encontrado."));
+    }
+
     public void deleteParticipante(Long id){
         participanteRepository.deleteById(id);
     }
@@ -37,7 +45,10 @@ public class ParticipanteService {
                 participante.getPhone(),
                 participante.getEmail(),
                 participante.getInstitution(),
-                participante.getRole()
+                participante.getRole(),
+                participante.getCertificadoEnviadoEm(),
+                participante.getCertificadoErro(),
+                participante.estaForaDoEnvioGeral()
         );
     }
 

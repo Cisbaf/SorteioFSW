@@ -1,0 +1,9 @@
+modelo.jpg: arte do certificado do 1º Summit Brasileiro de Consórcios Públicos de Saúde, com o
+"[NOME DO PARTICIPANTE]" de exemplo. O CertificadoService cobre esse texto e escreve o nome por cima,
+então as coordenadas em CertificadoService dependem desta imagem (3840x2715, versão 4K feita com upscale por IA Real-ESRGAN). Trocou a arte? Revise-as.
+
+NotoSans-ExtraCondensedBold.ttf: fonte Noto Sans (Google), licença SIL Open Font License 1.1,
+que permite embutir e redistribuir a fonte junto com o software.
+
+carta.pdf: Carta do I Summit Brasileiro de Consórcios Públicos de Saúde, assinada. Vai anexada em todo e-mail de
+certificado (CertificadoEmailService), junto com o certificado.
