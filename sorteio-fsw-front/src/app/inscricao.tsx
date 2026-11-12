@@ -17,6 +17,11 @@ import { inscrever } from "./actions";
 const VAZIO = { name: "", phone: "", email: "", institution: "", role: "" };
 const CAMPOS: Campo[] = ["name", "phone", "email", "institution", "role", "consentimento"];
 
+const OUTROS = "Outros cargos";
+const CARGOS = ["Secretário municipal", "Secretário executivo", "Prefeito", "Vice-prefeito", "Deputado", OUTROS];
+const CLASSE_CAMPO =
+  "h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-base text-slate-900 transition outline-none placeholder:text-slate-400 focus:border-magenta focus:ring-4 focus:ring-magenta/15 aria-invalid:border-red-500 aria-invalid:focus:ring-red-500/15";
+
 export default function Inscricao() {
   // Trocar a key remonta o formulário do zero: útil quando o celular/tablet é usado no estande para várias pessoas.
   const [rodada, setRodada] = useState(0);
@@ -32,6 +37,8 @@ function Formulario({ onNovaInscricao }: { onNovaInscricao: () => void }) {
   const [estado, acao, enviando] = useActionState<EstadoInscricao, FormData>(inscrever, { status: "inicial" });
   const [valores, setValores] = useState(VAZIO);
   const [consentiu, setConsentiu] = useState(false);
+  // Opção escolhida no select; em "Outros cargos" o texto digitado fica em `valores.role`.
+  const [cargo, setCargo] = useState("");
   // Erros da validação local; `undefined` explícito esconde o erro do servidor depois que a pessoa corrige o campo.
   const [errosLocais, setErrosLocais] = useState<ErrosDeCampo>({});
   const [mensagemLocal, setMensagemLocal] = useState<string | null>(null);
@@ -56,15 +63,18 @@ function Formulario({ onNovaInscricao }: { onNovaInscricao: () => void }) {
     // Com JavaScript, o envio é manual: o `action` do form faria o React resetar o formulário depois da resposta
     // (desmarcando o consentimento num erro). Sem JavaScript, o `action` continua funcionando sozinho.
     evento.preventDefault();
-    const validacao = validarInscricao(normalizarInscricao({ ...valores, consentimento: consentiu }));
+    const role = cargo === OUTROS ? valores.role : cargo;
+    const validacao = validarInscricao(normalizarInscricao({ ...valores, role, consentimento: consentiu }));
     const encontrados: ErrosDeCampo = validacao.ok ? {} : { ...validacao.campos };
+    if (!cargo) encontrados.role = "Selecione seu cargo.";
     if (!consentiu) encontrados.consentimento = "É preciso concordar para participar.";
 
     const primeiroInvalido = CAMPOS.find((c) => encontrados[c]);
     if (primeiroInvalido) {
       setErrosLocais(Object.fromEntries(CAMPOS.map((c) => [c, encontrados[c]])));
       setMensagemLocal("Confira os campos destacados.");
-      document.getElementById(primeiroInvalido)?.focus();
+      const idFoco = primeiroInvalido === "role" && cargo === OUTROS ? "role-outro" : primeiroInvalido;
+      document.getElementById(idFoco)?.focus();
       return;
     }
     setErrosLocais({});
@@ -137,15 +147,15 @@ function Formulario({ onNovaInscricao }: { onNovaInscricao: () => void }) {
           maxLength={LIMITES.institution}
           enterKeyHint="next"
         />
-        <CampoTexto
-          id="role"
-          rotulo="Cargo ou função"
+        <CampoCargo
+          cargo={cargo}
+          outro={valores.role}
           erro={erros.role}
-          value={valores.role}
-          onChange={(e) => alterar("role", e.target.value)}
-          autoComplete="organization-title"
-          maxLength={LIMITES.role}
-          enterKeyHint="done"
+          onCargo={(valor) => {
+            setCargo(valor);
+            alterar("role", "");
+          }}
+          onOutro={(valor) => alterar("role", valor)}
         />
 
         <div>
@@ -226,7 +236,7 @@ function CampoTexto({ id, rotulo, dica, erro, ...input }: CampoTextoProps) {
         required
         aria-invalid={Boolean(erro)}
         aria-describedby={descricao}
-        className="h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-base text-slate-900 transition outline-none placeholder:text-slate-400 focus:border-magenta focus:ring-4 focus:ring-magenta/15 aria-invalid:border-red-500 aria-invalid:focus:ring-red-500/15"
+        className={CLASSE_CAMPO}
         {...input}
       />
       {erro ? (
@@ -238,6 +248,68 @@ function CampoTexto({ id, rotulo, dica, erro, ...input }: CampoTextoProps) {
           </p>
         )
       )}
+    </div>
+  );
+}
+
+type CampoCargoProps = {
+  cargo: string;
+  outro: string;
+  erro?: string;
+  onCargo: (valor: string) => void;
+  onOutro: (valor: string) => void;
+};
+
+function CampoCargo({ cargo, outro, erro, onCargo, onOutro }: CampoCargoProps) {
+  const ehOutro = cargo === OUTROS;
+  return (
+    <div>
+      <label htmlFor="role" className="mb-1.5 block text-sm font-semibold text-slate-800">
+        Cargo
+      </label>
+      <select
+        id="role"
+        // O servidor lê `role`: em "Outros cargos" quem envia o valor é a caixa de texto.
+        name={ehOutro ? undefined : "role"}
+        required
+        value={cargo}
+        onChange={(e) => onCargo(e.target.value)}
+        aria-invalid={Boolean(erro) && !ehOutro}
+        aria-describedby={erro && !ehOutro ? "role-erro" : undefined}
+        className={`${CLASSE_CAMPO} cursor-pointer ${cargo ? "" : "text-slate-400"}`}
+      >
+        <option value="" disabled>
+          Selecione seu cargo
+        </option>
+        {CARGOS.map((c) => (
+          <option key={c} value={c} className="text-slate-900">
+            {c}
+          </option>
+        ))}
+      </select>
+      {ehOutro && (
+        <>
+          <label htmlFor="role-outro" className="sr-only">
+            Qual é o seu cargo?
+          </label>
+          <input
+            id="role-outro"
+            name="role"
+            required
+            autoFocus
+            value={outro}
+            onChange={(e) => onOutro(e.target.value)}
+            placeholder="Digite seu cargo"
+            autoComplete="organization-title"
+            maxLength={LIMITES.role}
+            enterKeyHint="done"
+            aria-invalid={Boolean(erro)}
+            aria-describedby={erro ? "role-erro" : undefined}
+            className={`${CLASSE_CAMPO} mt-2`}
+          />
+        </>
+      )}
+      {erro && <MensagemErro id="role-erro">{erro}</MensagemErro>}
     </div>
   );
 }

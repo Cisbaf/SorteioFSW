@@ -17,7 +17,7 @@ export default function Home() {
             Sorteio exclusivo {CISBAF.sigla}
           </p>
           <h1 id="titulo" className="mt-4 font-display text-[2.15rem] leading-[1.05] font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            Concorra no sorteio do {CISBAF.sigla} na <MarcaFswk className="whitespace-nowrap" />
+            Concorra no sorteio do SUMMIT na <MarcaFswk className="whitespace-nowrap" />
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
             Leva menos de um minuto: preencha seus dados e pronto, você já está participando.

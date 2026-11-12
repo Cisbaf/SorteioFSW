@@ -104,3 +104,10 @@ export const IconeWhatsApp = (p: SVGProps<SVGSVGElement>) => (
     <path d="M9.2 9.3c0 2.6 2.9 5.5 5.5 5.5l1.1-1.3-1.8-.9-.9.9c-.9-.4-2.1-1.6-2.5-2.5l.9-.9-.9-1.8Z" />
   </Icone>
 );
+
+export const IconeEmail = (p: SVGProps<SVGSVGElement>) => (
+  <Icone {...p}>
+    <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+    <path d="m4 7 8 6 8-6" />
+  </Icone>
+);
