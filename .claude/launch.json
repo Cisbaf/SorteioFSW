@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "sorteio-front",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "sorteio-fsw-front", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}
